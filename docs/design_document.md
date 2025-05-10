@@ -374,7 +374,42 @@ The Excel report will be divided into multiple sheets:
 - Create installers for Windows
 - Include all necessary dependencies
 
-### 9.2 Updates
+### 9.2 Database Deployment Considerations
+
+#### 9.2.1 Native Module Compilation Issues
+- The SQLite3 module requires native compilation during the build process
+- Common issues include:
+  - Missing Visual Studio Build Tools
+  - Incompatible Node.js and Electron versions
+  - N-API version mismatches
+
+#### 9.2.2 Solutions for SQLite3 Deployment
+- Use electron-rebuild to rebuild native modules for the specific Electron version:
+  ```bash
+  npm install --save-dev electron-rebuild
+  npx electron-rebuild -f -w sqlite3
+  ```
+- Alternative approach: Use better-sqlite3 which offers a synchronous API and better performance
+- Consider adding the rebuild step to package.json scripts for consistency:
+  ```json
+  "scripts": {
+    "postinstall": "electron-rebuild -f -w sqlite3"
+  }
+  ```
+
+#### 9.2.3 Database File Location
+- The application stores the SQLite database in the user's AppData directory:
+  - Windows: `C:\Users\<Username>\AppData\Roaming\csPDCA\cspdca.db`
+- This location is determined by Electron's `app.getPath('userData')` API
+- Benefits of this approach:
+  - Each user on the computer has their own separate data
+  - User data persists between application updates
+  - The application doesn't need elevated permissions to write data
+- Considerations for deployment:
+  - Data from development/debug sessions will persist in installed version
+  - Include data migration strategies for version updates if schema changes
+
+### 9.3 Updates
 - Implement auto-update functionality if needed
 - Provide update notification to users
 

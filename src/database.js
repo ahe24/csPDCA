@@ -12,7 +12,16 @@ class Database {
     const dbPath = path.join(userDataPath, 'cspdca.db');
     
     // Log database path for debugging
-    console.log('Database path:', dbPath);
+    console.log('DATABASE PATH (check here for your data):', dbPath);
+    // Show an alert dialog with the database path
+    if (app.isPackaged) {
+      const { dialog } = require('electron');
+      dialog.showMessageBoxSync({
+        type: 'info',
+        title: 'Database Location',
+        message: `Your database is stored at:\n${dbPath}\n\nThis is where all your application data is saved.`
+      });
+    }
     
     // Initialize database connection
     this.db = new sqlite3.Database(dbPath, (err) => {
