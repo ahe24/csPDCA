@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>csPDCA - 로그인</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    
+    body {
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .login-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 400px;
+      max-width: 90%;
+    }
+    
+    .app-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #3f51b5;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: #3f51b5;
+      outline: none;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #3f51b5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 16px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+    }
+    
+    .btn:hover {
+      background-color: #303f9f;
+    }
+    
+    .link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #3f51b5;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .link:hover {
+      text-decoration: underline;
+    }
+    
+    .error-message {
+      color: #f44336;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    .form-section {
+      display: none;
+    }
+    
+    .form-section.active {
+      display: block;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 15px;
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1 class="app-title">csPDCA</h1>
+    
+    <!-- Login Form -->
+    <div id="login-form" class="form-section active">
+      <div class="form-group">
+        <label for="username">사용자 이름</label>
+        <input type="text" id="username" class="form-control" placeholder="사용자 이름을 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" class="form-control" placeholder="비밀번호를 입력하세요">
+        <div id="login-error" class="error-message"></div>
+      </div>
+      
+      <button id="login-btn" class="btn">로그인</button>
+      
+      <a href="#" id="register-link" class="link">계정 만들기</a>
+      <a href="#" id="forgot-password-link" class="link">비밀번호를 잊으셨나요?</a>
+    </div>
+    
+    <!-- Register Form -->
+    <div id="register-form" class="form-section">
+      <a href="#" id="back-to-login" class="back-link">← 로그인으로 돌아가기</a>
+      
+      <div class="form-group">
+        <label for="reg-username">사용자 이름</label>
+        <input type="text" id="reg-username" class="form-control" placeholder="사용자 이름을 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="reg-password">비밀번호</label>
+        <input type="password" id="reg-password" class="form-control" placeholder="비밀번호를 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="reg-confirm-password">비밀번호 확인</label>
+        <input type="password" id="reg-confirm-password" class="form-control" placeholder="비밀번호를 다시 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="reg-name">이름</label>
+        <input type="text" id="reg-name" class="form-control" placeholder="이름을 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="reg-email">이메일</label>
+        <input type="email" id="reg-email" class="form-control" placeholder="이메일을 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="reg-security-question">보안 질문</label>
+        <select id="reg-security-question" class="form-control">
+          <option value="">보안 질문을 선택하세요</option>
+          <option value="birthplace">태어난 곳은 어디인가요?</option>
+          <option value="firstpet">첫 번째 애완동물의 이름은 무엇인가요?</option>
+          <option value="mothername">어머니의 성함은 무엇인가요?</option>
+          <option value="school">초등학교 이름은 무엇인가요?</option>
+          <option value="favoritecolor">가장 좋아하는 색상은 무엇인가요?</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="reg-security-answer">보안 질문 답변</label>
+        <input type="text" id="reg-security-answer" class="form-control" placeholder="보안 질문 답변을 입력하세요">
+        <div id="register-error" class="error-message"></div>
+      </div>
+      
+      <button id="register-btn" class="btn">계정 만들기</button>
+    </div>
+    
+    <!-- Forgot Password Form -->
+    <div id="forgot-password-form" class="form-section">
+      <a href="#" id="back-to-login-from-forgot" class="back-link">← 로그인으로 돌아가기</a>
+      
+      <div class="form-group">
+        <label for="forgot-username">사용자 이름</label>
+        <input type="text" id="forgot-username" class="form-control" placeholder="사용자 이름을 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="forgot-security-question">보안 질문</label>
+        <select id="forgot-security-question" class="form-control">
+          <option value="">보안 질문을 선택하세요</option>
+          <option value="birthplace">태어난 곳은 어디인가요?</option>
+          <option value="firstpet">첫 번째 애완동물의 이름은 무엇인가요?</option>
+          <option value="mothername">어머니의 성함은 무엇인가요?</option>
+          <option value="school">초등학교 이름은 무엇인가요?</option>
+          <option value="favoritecolor">가장 좋아하는 색상은 무엇인가요?</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="forgot-security-answer">보안 질문 답변</label>
+        <input type="text" id="forgot-security-answer" class="form-control" placeholder="보안 질문 답변을 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="forgot-new-password">새 비밀번호</label>
+        <input type="password" id="forgot-new-password" class="form-control" placeholder="새 비밀번호를 입력하세요">
+      </div>
+      
+      <div class="form-group">
+        <label for="forgot-confirm-password">새 비밀번호 확인</label>
+        <input type="password" id="forgot-confirm-password" class="form-control" placeholder="새 비밀번호를 다시 입력하세요">
+        <div id="forgot-error" class="error-message"></div>
+      </div>
+      
+      <button id="reset-password-btn" class="btn">비밀번호 재설정</button>
+    </div>
+  </div>
+  
+  <script>
+    // DOM elements
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const forgotPasswordForm = document.getElementById('forgot-password-form');
+    
+    const registerLink = document.getElementById('register-link');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const backToLogin = document.getElementById('back-to-login');
+    const backToLoginFromForgot = document.getElementById('back-to-login-from-forgot');
+    
+    const loginBtn = document.getElementById('login-btn');
+    const registerBtn = document.getElementById('register-btn');
+    const resetPasswordBtn = document.getElementById('reset-password-btn');
+    
+    const loginError = document.getElementById('login-error');
+    const registerError = document.getElementById('register-error');
+    const forgotError = document.getElementById('forgot-error');
+    
+    // Form switching
+    registerLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.classList.remove('active');
+      registerForm.classList.add('active');
+      forgotPasswordForm.classList.remove('active');
+      clearErrors();
+    });
+    
+    forgotPasswordLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.classList.remove('active');
+      registerForm.classList.remove('active');
+      forgotPasswordForm.classList.add('active');
+      clearErrors();
+    });
+    
+    backToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.classList.add('active');
+      registerForm.classList.remove('active');
+      forgotPasswordForm.classList.remove('active');
+      clearErrors();
+    });
+    
+    backToLoginFromForgot.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.classList.add('active');
+      registerForm.classList.remove('active');
+      forgotPasswordForm.classList.remove('active');
+      clearErrors();
+    });
+    
+    // Clear error messages
+    function clearErrors() {
+      loginError.style.display = 'none';
+      registerError.style.display = 'none';
+      forgotError.style.display = 'none';
+    }
+    
+    // Show error message
+    function showError(element, message) {
+      element.textContent = message;
+      element.style.display = 'block';
+    }
+    
+    // Login form submission
+    loginBtn.addEventListener('click', async () => {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      
+      if (!username || !password) {
+        showError(loginError, '사용자 이름과 비밀번호를 입력하세요.');
+        return;
+      }
+      
+      try {
+        const result = await window.api.login({ username, password });
+        
+        if (result.error) {
+          showError(loginError, result.error);
+        }
+      } catch (error) {
+        showError(loginError, '로그인 중 오류가 발생했습니다.');
+        console.error('Login error:', error);
+      }
+    });
+    
+    // Register form submission
+    registerBtn.addEventListener('click', async () => {
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-confirm-password').value;
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const securityQuestion = document.getElementById('reg-security-question').value;
+      const securityAnswer = document.getElementById('reg-security-answer').value.trim();
+      
+      // Validate inputs
+      if (!username || !password || !confirmPassword || !name || !email || !securityQuestion || !securityAnswer) {
+        showError(registerError, '모든 필드를 입력하세요.');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        showError(registerError, '비밀번호가 일치하지 않습니다.');
+        return;
+      }
+      
+      try {
+        const result = await window.api.register({
+          username,
+          password,
+          name,
+          email,
+          securityQuestion,
+          securityAnswer
+        });
+        
+        if (result.error) {
+          showError(registerError, result.error);
+        } else {
+          // Show success message and switch to login form
+          alert('계정이 성공적으로 생성되었습니다. 로그인하세요.');
+          loginForm.classList.add('active');
+          registerForm.classList.remove('active');
+          clearErrors();
+        }
+      } catch (error) {
+        showError(registerError, '계정 생성 중 오류가 발생했습니다.');
+        console.error('Registration error:', error);
+      }
+    });
+    
+    // Reset password form submission
+    resetPasswordBtn.addEventListener('click', async () => {
+      const username = document.getElementById('forgot-username').value.trim();
+      const securityQuestion = document.getElementById('forgot-security-question').value;
+      const securityAnswer = document.getElementById('forgot-security-answer').value.trim();
+      const newPassword = document.getElementById('forgot-new-password').value;
+      const confirmPassword = document.getElementById('forgot-confirm-password').value;
+      
+      // Validate inputs
+      if (!username || !securityQuestion || !securityAnswer || !newPassword || !confirmPassword) {
+        showError(forgotError, '모든 필드를 입력하세요.');
+        return;
+      }
+      
+      if (newPassword !== confirmPassword) {
+        showError(forgotError, '비밀번호가 일치하지 않습니다.');
+        return;
+      }
+      
+      try {
+        const result = await window.api.recoverPassword({
+          username,
+          securityQuestion,
+          securityAnswer,
+          newPassword
+        });
+        
+        if (result.error) {
+          showError(forgotError, result.error);
+        } else {
+          // Show success message and switch to login form
+          alert('비밀번호가 성공적으로 재설정되었습니다. 로그인하세요.');
+          loginForm.classList.add('active');
+          forgotPasswordForm.classList.remove('active');
+          clearErrors();
+        }
+      } catch (error) {
+        showError(forgotError, '비밀번호 재설정 중 오류가 발생했습니다.');
+        console.error('Password recovery error:', error);
+      }
+    });
+    
+    // Handle Enter key press for login
+    document.getElementById('password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loginBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
