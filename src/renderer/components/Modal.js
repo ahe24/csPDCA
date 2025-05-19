@@ -27,15 +27,8 @@ const Modal = ({ isOpen, onClose, title, children, footer }) => {
   
   if (!isOpen) return null;
   
-  // Close modal when clicking on overlay
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-  
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
+    <div className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>

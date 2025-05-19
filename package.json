@@ -20,6 +20,7 @@
     "@babel/preset-react": "^7.22.5",
     "babel-loader": "^9.1.2",
     "concurrently": "^8.0.1",
+    "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^6.7.3",
     "electron": "^25.0.0",
     "electron-builder": "^24.4.0",
@@ -35,6 +36,7 @@
     "@fullcalendar/react": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
     "bcryptjs": "^2.4.3",
+    "canvas": "^3.1.0",
     "electron-store": "^8.1.0",
     "exceljs": "^4.4.0",
     "react": "^18.2.0",
@@ -47,15 +49,12 @@
     "appId": "com.cspdca.app",
     "productName": "csPDCA",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
-    "files": [
-      "src/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "build/icons/app-icon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -64,6 +63,12 @@
       "createStartMenuShortcut": true,
       "shortcutName": "csPDCA",
       "runAfterFinish": false
-    }
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "docs/favicon_img/*",
+      "package.json"
+    ]
   }
 }

@@ -22,12 +22,19 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, '../docs/favicon_img/favicon.ico'),
+    frame: true,
+    titleBarStyle: 'default',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     }
   });
+  
+  // Set the application name that appears in the title bar
+  mainWindow.setTitle('csPDCA');
+  mainWindow.setMenuBarVisibility(false);
 
   // Check if user is already logged in
   const loggedInUser = auth.getLoggedInUser();

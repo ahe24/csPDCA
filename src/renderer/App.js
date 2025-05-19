@@ -28,7 +28,15 @@ function App() {
     <div className="app">
       <header className="app-header">
         <div className="container">
-          <h1 className="app-title">csPDCA</h1>
+          <div className="app-title-container">
+            <img 
+              src="images/favicon.ico" 
+              alt="csPDCA Icon" 
+              className="app-icon" 
+              style={{ width: '24px', height: '24px', marginRight: '10px' }}
+            />
+            <h1 className="app-title">csPDCA</h1>
+          </div>
           
           {user && (
             <div className="user-info">

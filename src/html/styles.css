@@ -26,6 +26,66 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+.app-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.user-info {
+  margin-left: 20px;
+}
+
+.welcome-message {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.app-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.app-nav-item {
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.app-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.app-nav-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
 }
 
 a {
