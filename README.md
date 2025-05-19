@@ -57,25 +57,51 @@ PDCA(Plan-Do-Check-Act) 사이클 기반의 일일 업무 관리 윈도우 PC �
 
 ## 설치 및 실행
 
+### 개발 모드
 1. 의존성 패키지 설치:
 ```bash
 npm install
 ```
 
-2. 개발 모드로 실행:
+2. 개발 서버 실행:
 ```bash
 npm start
 ```
 
-3. 렌더러 프로세스 빌드:
+### 프로덕션 빌드
+1. 의존성 설치 및 네이티브 모듈 빌드:
+```bash
+npm install
+```
+
+2. 렌더러 프로세스 빌드:
 ```bash
 npm run build-renderer
 ```
 
-4. 배포 패키지 생성:
+3. 인스톨러 생성:
 ```bash
 npm run dist
 ```
+
+### 문제 해결
+- 설치 후 실행이 되지 않는 경우:
+  - `%APPDATA%\cspdca\error.log` 파일 확인
+  - 관리자 권한으로 실행 시도
+  - `%APPDATA%\cspdca` 디렉토리 삭제 후 재시도 (기존 데이터는 삭제됨)
+
+## 데이터베이스 정보
+
+- 데이터베이스 위치: `%APPDATA%\cspdca\cspdca.db`
+- 오류 로그: `%APPDATA%\cspdca\error.log`
+- 애플리케이션 데이터: `%APPDATA%\cspdca\`
+
+## 최근 업데이트 (2025-05-19)
+
+- 데이터베이스 경로 안정성 개선
+- 향상된 오류 처리 및 로깅 시스템 추가
+- 주간 계획 카드 성능 최적화
+- 캘린더 뷰에서의 날짜 선택 기능 개선
 
 ## 프로젝트 구조
 

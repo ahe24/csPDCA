@@ -12,13 +12,42 @@ const CalendarPage = () => {
   const { user } = useAuth();
   const { tasks, loadTasks, createTask, updateTask, deleteTask } = useTasks();
   
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const today = new Date();
+  const [currentDate, setCurrentDate] = useState(today);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [weeklyPlanDate, setWeeklyPlanDate] = useState(today); // Dedicated state for WeeklyPlanCard
   const [currentViewType, setCurrentViewType] = useState('dayGridMonth');
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewTask, setIsNewTask] = useState(false);
   const [selectedDateInfo, setSelectedDateInfo] = useState(null);
+  
+  // Helper function to get Monday of the week for a given date
+  const getWeekStartDate = (date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    // Calculate Monday of the current week (0 = Sunday, 1 = Monday, ...)
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(d);
+    monday.setDate(diff);
+    monday.setHours(0, 0, 0, 0);
+    return monday;
+  };
+  
+  // Update weeklyPlanDate when view changes or when selectedDate changes
+  useEffect(() => {
+    if (selectedDate) {
+      // If a date is selected, show that date's week
+      setWeeklyPlanDate(getWeekStartDate(selectedDate));
+    } else if (currentViewType === 'timeGridWeek' || currentViewType === 'timeGridDay') {
+      // In weekly/daily view, show the current week of the view
+      setWeeklyPlanDate(getWeekStartDate(currentDate));
+    } else {
+      // In monthly view, show the current week
+      setWeeklyPlanDate(getWeekStartDate(new Date()));
+    }
+  }, [selectedDate, currentViewType, currentDate]);
   
   // Load initial tasks when component mounts
   useEffect(() => {
@@ -44,15 +73,13 @@ const CalendarPage = () => {
   
   // Handle view change
   const handleViewChange = (info) => {
-    // Update state with new view information
-    setCurrentDate(info.currentDate);
+    const newDate = info.currentDate || new Date();
+    setCurrentDate(newDate);
     setCurrentViewType(info.viewType);
     setDateRange({ start: info.start, end: info.end });
     
-    console.log(`View changed to ${info.viewType}, current date: ${info.currentDate}`);
+    console.log(`View changed to ${info.viewType}, current date: ${newDate}`);
     console.log(`Date range: ${info.start} to ${info.end}`);
-    
-    // We don't need to call loadTasks here as it will be triggered by the dateRange change
   };
   
   // Handle task click
@@ -82,13 +109,37 @@ const CalendarPage = () => {
     setIsModalOpen(true);
   };
   
-  // Handle date click
-  const handleDateClick = (dateInfo) => {
-    // Adjust start time for monthly view if needed
-    let adjustedStart = dateInfo.start;
-    let adjustedEnd = dateInfo.end;
+  // Handle date click for updating the selected date (single click in month view)
+  const handleDateSelect = (date) => {
+    const clickedDate = new Date(date);
+    console.log('Date selected (single click):', clickedDate.toISOString());
     
-    // If in month view, set start time to 9 AM and handle overlaps
+    // If clicking the currently selected date, deselect it
+    if (selectedDate && 
+        clickedDate.getFullYear() === selectedDate.getFullYear() &&
+        clickedDate.getMonth() === selectedDate.getMonth() &&
+        clickedDate.getDate() === selectedDate.getDate()) {
+      setSelectedDate(null);
+    } else {
+      setSelectedDate(clickedDate);
+    }
+  };
+
+  // Handle date click for task creation (double click in any view)
+  const handleDateClick = (dateInfo) => {
+    // Update the selected date first
+    handleDateSelect(dateInfo.start);
+    
+    // Only proceed with modal on double click in any view
+    if (!dateInfo.jsEvent || dateInfo.jsEvent.detail < 2) {
+      // Single click - we already updated the selected date, so just return
+      return;
+    }
+    
+    // Adjust start time for monthly view if needed
+    let adjustedStart = new Date(dateInfo.start);
+    let adjustedEnd = dateInfo.end ? new Date(dateInfo.end) : null;
+    
     if (dateInfo.view === 'dayGridMonth') {
       adjustedStart = adjustTimeForMonthlyView(dateInfo.start, 'dayGridMonth');
       adjustedEnd = new Date(adjustedStart.getTime() + 60 * 60 * 1000); // 1 hour later
@@ -376,7 +427,7 @@ const CalendarPage = () => {
           <MonthlyPlanCard date={currentDate} />
         </div>
         <div style={{ flex: '1' }}>
-          <WeeklyPlanCard date={currentDate} />
+          <WeeklyPlanCard date={weeklyPlanDate} />
         </div>
       </div>
       

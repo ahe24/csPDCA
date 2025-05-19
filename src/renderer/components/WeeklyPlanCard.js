@@ -9,30 +9,45 @@ const WeeklyPlanCard = ({ date }) => {
   const [planContent, setPlanContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [yearWeek, setYearWeek] = useState('');
+  const [weekRange, setWeekRange] = useState({ start: null, end: null });
   
   // Load weekly plan when date changes
   useEffect(() => {
-    // Always use today's date to determine the current week
-    // This ensures the weekly plan always shows the current week regardless of calendar view
-    const today = new Date();
-    const todayYearWeek = getYearWeek(today);
-    console.log('WeeklyPlanCard - Today\'s date:', today, 'Week:', todayYearWeek);
+    if (!date) return;
     
-    // Get the week range to verify the calculation
-    const weekRange = getWeekRange(todayYearWeek);
-    console.log('WeeklyPlanCard - Current week range:', weekRange.start, 'to', weekRange.end);
+    // Create a new date object to avoid reference issues
+    const currentDate = new Date(date);
     
-    // If we also have a calendar date, log it for debugging
-    if (date) {
-      console.log('WeeklyPlanCard - Calendar date:', date);
-      const calendarYearWeek = getYearWeek(date);
-      console.log('WeeklyPlanCard - Calendar year-week:', calendarYearWeek);
-    }
+    // Get the current day of the week (0 = Sunday, 1 = Monday, etc.)
+    const dayOfWeek = currentDate.getDay();
     
-    // Always use today's week for the weekly plan
-    setYearWeek(todayYearWeek);
-    loadWeeklyPlan(todayYearWeek);
-  }, [date]); // Removed loadWeeklyPlan from dependencies to prevent infinite loop
+    // Calculate the start of the week (Monday)
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    startOfWeek.setHours(0, 0, 0, 0);
+    
+    // Calculate the end of the week (Sunday)
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+    
+    // Get the year and week number for the target date
+    const targetYearWeek = getYearWeek(date);
+    
+    console.log('WeeklyPlanCard - Received date:', currentDate);
+    console.log('WeeklyPlanCard - Start of week:', startOfWeek);
+    console.log('WeeklyPlanCard - End of week:', endOfWeek);
+    
+    // Update the state with the target week
+    setYearWeek(targetYearWeek);
+    setWeekRange({ start: startOfWeek, end: endOfWeek });
+    loadWeeklyPlan(targetYearWeek);
+    
+    // Cleanup function
+    return () => {
+      console.log('WeeklyPlanCard - Cleaning up for date:', date);
+    };
+  }, [date, date?.getTime()]); // Add date.getTime() to dependency array to detect date object changes
   
   // Update plan content when weekly plan changes
   useEffect(() => {

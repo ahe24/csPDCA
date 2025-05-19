@@ -7,31 +7,90 @@ const { v4: uuidv4 } = require('uuid');
 
 class Database {
   constructor() {
-    // Create data directory if it doesn't exist
-    const userDataPath = app.getPath('userData');
-    const dbPath = path.join(userDataPath, 'cspdca.db');
-    
-    // Log database path for debugging
-    console.log('DATABASE PATH (check here for your data):', dbPath);
-    // Show an alert dialog with the database path
-    if (app.isPackaged) {
-      const { dialog } = require('electron');
-      dialog.showMessageBoxSync({
-        type: 'info',
-        title: 'Database Location',
-        message: `Your database is stored at:\n${dbPath}\n\nThis is where all your application data is saved.`
-      });
-    }
-    
-    // Initialize database connection
-    this.db = new sqlite3.Database(dbPath, (err) => {
-      if (err) {
-        console.error('Database connection error:', err.message);
-      } else {
-        console.log('Connected to the SQLite database');
-        this.initializeDatabase();
+    try {
+      console.log('Starting database initialization...');
+      
+      // Get user data path
+      const userDataPath = app.getPath('userData');
+      console.log('User data path:', userDataPath);
+      
+      // Ensure the directory exists
+      try {
+        if (!fs.existsSync(userDataPath)) {
+          console.log('Creating user data directory...');
+          fs.mkdirSync(userDataPath, { recursive: true });
+          console.log('User data directory created');
+        }
+      } catch (dirError) {
+        console.error('Error creating user data directory:', dirError);
+        throw dirError;
       }
-    });
+      
+      // Set up database path
+      const dbPath = path.join(userDataPath, 'cspdca.db');
+      console.log('Database path:', dbPath);
+      
+      // Show an alert dialog with the database path in production
+      if (app.isPackaged) {
+        console.log('Running in production mode');
+        try {
+          const { dialog } = require('electron');
+          dialog.showMessageBoxSync({
+            type: 'info',
+            title: 'Database Location',
+            message: `Your database is stored at:\n${dbPath}\n\nThis is where all your application data is saved.`
+          });
+        } catch (dialogError) {
+          console.error('Error showing dialog:', dialogError);
+          // Continue even if dialog fails
+        }
+      } else {
+        console.log('Running in development mode');
+      }
+      
+      // Initialize database connection
+      console.log('Attempting to connect to SQLite database...');
+      this.db = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+          console.error('Database connection error:', err);
+          console.error('Error details:', {
+            code: err.code,
+            errno: err.errno,
+            path: dbPath,
+            exists: fs.existsSync(dbPath),
+            dirExists: fs.existsSync(path.dirname(dbPath)),
+            dirWritable: (() => {
+              try {
+                fs.accessSync(path.dirname(dbPath), fs.constants.W_OK);
+                return true;
+              } catch (e) {
+                return false;
+              }
+            })()
+          });
+          throw err; // Re-throw to be caught by the outer try-catch
+        } else {
+          console.log('Successfully connected to the SQLite database');
+          console.log('Database file stats:', fs.statSync(dbPath));
+          this.initializeDatabase();
+        }
+      });
+    } catch (error) {
+      console.error('FATAL ERROR initializing database:', error);
+      console.error('Error stack:', error.stack);
+      
+      // Try to write error to a log file
+      try {
+        const logPath = path.join(app.getPath('userData'), 'error.log');
+        const errorMessage = `[${new Date().toISOString()}] ${error.message}\n${error.stack}\n\n`;
+        fs.appendFileSync(logPath, errorMessage);
+        console.log(`Error logged to: ${logPath}`);
+      } catch (logError) {
+        console.error('Failed to write error log:', logError);
+      }
+      
+      throw error; // Re-throw the error to be handled by the caller
+    }
   }
   
   // Initialize database tables if they don't exist

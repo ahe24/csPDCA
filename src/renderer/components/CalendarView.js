@@ -24,13 +24,8 @@ const CalendarView = ({
     window.currentViewType = 'dayGridMonth';
   }, []);
   
-  // Handle date double-click (for creating new tasks)
+  // Handle date clicks (both single and double)
   const handleDateClick = (info) => {
-    // Only respond to double-clicks
-    if (!info.jsEvent.detail || info.jsEvent.detail < 2) {
-      return; // Not a double-click, ignore
-    }
-    
     const { date, allDay, view } = info;
     
     // Store the current view type in the window object
@@ -40,15 +35,18 @@ const CalendarView = ({
     const endTime = new Date(date);
     endTime.setHours(endTime.getHours() + 1);
     
-    // Preserve the exact time from the click
-    const exactDateTime = {
+    // Create the date info object
+    const dateInfo = {
       start: date,
       end: endTime,
       allDay: allDay || view.type === 'dayGridMonth',
-      view: view.type
+      view: view.type,
+      jsEvent: info.jsEvent // Pass the original event to check for single/double click
     };
     
-    onDateClick(exactDateTime);
+    // Always call onDateClick to update the selected date
+    // The parent component will handle single/double click logic
+    onDateClick(dateInfo);
   };
   
   // Handle event double-click (for editing tasks)
